@@ -30,7 +30,6 @@ def create_app() -> FastAPI:
 
     ensure_sqlite_parent_dir()
     ensure_meta_tables()
-    ensure_demo_dataset_loaded()
 
     app.add_middleware(
         CORSMiddleware,

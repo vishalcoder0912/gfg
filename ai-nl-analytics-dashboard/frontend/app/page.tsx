@@ -84,10 +84,10 @@ export default function Home() {
         if (!alive) return
         setDatasets(res.datasets ?? [])
 
-        const demo = res.datasets?.find((d) => d.source === 'demo') ?? res.datasets?.[0]
-        if (demo) {
-          setDatasetId(demo.dataset_id)
-          setDatasetProfile(demo)
+        const defaultDataset = res.datasets?.[0]
+        if (defaultDataset) {
+          setDatasetId(defaultDataset.dataset_id)
+          setDatasetProfile(defaultDataset)
         }
       } catch (e) {
         if (!alive) return
@@ -189,7 +189,7 @@ export default function Home() {
                 </div>
                 {!!selectedDataset && (
                   <Pill>
-                    {selectedDataset.source === 'demo' ? 'Demo' : 'Upload'}: {selectedDataset.table_name}
+                    {selectedDataset.original_filename || selectedDataset.table_name}
                   </Pill>
                 )}
               </div>
@@ -210,7 +210,7 @@ export default function Home() {
                   </option>
                   {datasets.map((d) => (
                     <option key={d.dataset_id} value={d.dataset_id}>
-                      {d.source === 'demo' ? 'Demo' : 'Upload'} - {d.original_filename ?? d.table_name}
+                      {d.original_filename ?? d.table_name}
                     </option>
                   ))}
                 </select>

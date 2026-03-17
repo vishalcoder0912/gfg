@@ -11,6 +11,17 @@ function getApiBaseUrl(): string {
   return url.endsWith('/') ? url.slice(0, -1) : url
 }
 
+function getUploadBaseUrl(): string {
+  const raw = process.env.NEXT_PUBLIC_API_URL
+  // If we are using the internal proxy '/api', we must bypass for FormData
+  // because Next.js rewrites consume the body stream causing FastAPI 400 Bad Request.
+  if (!raw || raw.trim() === '/api') {
+    return 'http://localhost:8000'
+  }
+  const url = raw.trim()
+  return url.endsWith('/') ? url.slice(0, -1) : url
+}
+
 async function parseJsonOrThrow(res: Response) {
   const text = await res.text()
   const data = text ? JSON.parse(text) : null
@@ -31,7 +42,7 @@ export async function uploadCsv(file: File): Promise<DatasetProfile> {
   const form = new FormData()
   form.append('file', file)
 
-  const res = await fetch(`${getApiBaseUrl()}/upload-csv`, {
+  const res = await fetch(`${getUploadBaseUrl()}/upload-csv`, {
     method: 'POST',
     body: form,
   })
