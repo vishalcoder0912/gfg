@@ -18,8 +18,6 @@ import {
   LayoutDashboard
 } from 'lucide-react'
 
-import Sidebar from '../components/layout/Sidebar'
-import Navbar from '../components/layout/Navbar'
 import FileUpload from '../components/dashboard/FileUpload'
 import { SqlPanel } from '../components/SqlPanel'
 import { ChartRenderer } from '../components/ChartRenderer'

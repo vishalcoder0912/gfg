@@ -29,7 +29,7 @@ class Settings(BaseSettings):
 
     # Gemini (Google AI Studio)
     GEMINI_API_KEY: str | None = None
-    GEMINI_MODEL: str = "gemini-3.0-flash"
+    GEMINI_MODEL: str = "gemini-1.5-flash"
     GEMINI_TIMEOUT_SECONDS: float = 15.0
 
     @property
