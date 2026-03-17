@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm run:*)",
+      "Bash(set NODE_OPTIONS=--no-deprecation)",
+      "Bash(tasklist)",
+      "Bash(findstr node:*)",
+      "Bash(if exist:*)"
+    ]
+  }
+}

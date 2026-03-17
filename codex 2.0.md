@@ -258,5 +258,10 @@ Gemini dependency:
 - `GEMINI_API_KEY` is required for plan and insight generation, but the backend has fallbacks for plan/insight failure.
 
 
+  .\.venv\Scripts\Activate.ps1; python -m uvicorn app.main:create_app --factory --reload --host 0.0.0.0 --port 8000     
+
 
 ollama launch claude --model qwen3.5
+
+
+ollama launch claude --model minimax-m2.5:cloud

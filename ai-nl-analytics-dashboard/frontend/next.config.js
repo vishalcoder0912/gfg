@@ -8,6 +8,12 @@ const backendUrl = normalizeBaseUrl(process.env.API_URL || process.env.BACKEND_U
 
 const nextConfig = {
   reactStrictMode: true,
+  webpack: (config, { dev, isServer }) => {
+    if (dev && !isServer) {
+      config.devtool = 'source-map';
+    }
+    return config;
+  },
   async rewrites() {
     return [
       {
