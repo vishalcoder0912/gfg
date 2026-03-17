@@ -7,7 +7,7 @@ import { uploadCsv } from '../../lib/api';
 import type { DatasetProfile } from '../../lib/types';
 
 interface FileUploadProps {
-  onUploadComplete?: (profile: DatasetProfile) => void;
+  onUploadComplete?: (profile: DatasetProfile) => Promise<void> | void;
 }
 
 const DEFAULT_MAX_UPLOAD_BYTES = 50 * 1024 * 1024;
@@ -66,13 +66,15 @@ const FileUpload = ({ onUploadComplete }: FileUploadProps) => {
       console.log('Upload success:', data);
       setStatus('success');
       if (onUploadComplete) {
-        onUploadComplete(data);
+         await onUploadComplete(data);
       }
     } catch (err) {
       setStatus('error');
       setError(err instanceof Error ? err.message : 'Something went wrong');
     }
   };
+
+
 
   return (
     <div className="bg-white rounded-2xl border-2 border-dashed border-gray-200 p-8 transition-all hover:border-indigo-300">
