@@ -189,7 +189,7 @@ export default function Home() {
                 </div>
                 {!!selectedDataset && (
                   <Pill>
-                    {selectedDataset.original_filename || selectedDataset.table_name}
+                    {selectedDataset.original_filename ?? selectedDataset.table_name}
                   </Pill>
                 )}
               </div>

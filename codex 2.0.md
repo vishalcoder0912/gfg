@@ -256,3 +256,7 @@ API routing:
 
 Gemini dependency:
 - `GEMINI_API_KEY` is required for plan and insight generation, but the backend has fallbacks for plan/insight failure.
+
+
+
+ollama launch claude --model qwen3.5
