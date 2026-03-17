@@ -1,0 +1,26 @@
+
+> ai-nl-analytics-dashboard-frontend@0.1.0 predev
+> npm run check:node
+
+
+> ai-nl-analytics-dashboard-frontend@0.1.0 check:node
+> node -e "const v=process.versions.node.split('.').map(Number); const major=v[0]; if(major>=25){ console.error('Unsupported Node.js '+process.versions.node+'. Please use Node 20 LTS (recommended) or Node 18 LTS.'); process.exit(1);} console.log('Node OK:', process.versions.node);"
+
+Node OK: 24.1.0
+
+> ai-nl-analytics-dashboard-frontend@0.1.0 dev
+> next dev
+
+Error: spawn EPERM
+    at ChildProcess.spawn (node:internal/child_process:421:11)
+    at spawn (node:child_process:763:9)
+    at fork (node:child_process:172:10)
+    at C:\Users\VISHAL\Desktop\20-12-2025\All_full_stack_preparation\gfg\ai-nl-analytics-dashboard\frontend\node_modules\next\dist\cli\next-dev.js:213:45
+    at new Promise (<anonymous>)
+    at startServer (C:\Users\VISHAL\Desktop\20-12-2025\All_full_stack_preparation\gfg\ai-nl-analytics-dashboard\frontend\node_modules\next\dist\cli\next-dev.js:199:16)
+    at runDevServer (C:\Users\VISHAL\Desktop\20-12-2025\All_full_stack_preparation\gfg\ai-nl-analytics-dashboard\frontend\node_modules\next\dist\cli\next-dev.js:280:23)
+    at Module.nextDev (C:\Users\VISHAL\Desktop\20-12-2025\All_full_stack_preparation\gfg\ai-nl-analytics-dashboard\frontend\node_modules\next\dist\cli\next-dev.js:288:11) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'spawn'
+}

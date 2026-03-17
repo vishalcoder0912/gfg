@@ -1,0 +1,52 @@
+id,order_date,region,product_category,product_name,revenue,units_sold,profit
+1,2025-04-03,East,Electronics,Wireless Earbuds,12450,83,3120
+2,2025-04-07,West,Furniture,Office Chair,8450,25,1420
+3,2025-04-12,North,Clothing,Denim Jacket,9800,56,2100
+4,2025-04-15,South,Electronics,Smartwatch,15200,64,4200
+5,2025-04-22,East,Home,Air Purifier,7120,18,980
+6,2025-05-02,West,Electronics,Laptop Pro 14,23100,11,5200
+7,2025-05-06,North,Furniture,Standing Desk,18780,14,3900
+8,2025-05-10,South,Clothing,Running Shoes,11040,72,2500
+9,2025-05-14,East,Electronics,4K Monitor,16590,19,3100
+10,2025-05-18,West,Home,Robot Vacuum,14780,21,2800
+11,2025-05-24,North,Electronics,Phone X,25890,30,6100
+12,2025-05-28,South,Furniture,Bookshelf,9250,33,1600
+13,2025-06-03,East,Clothing,Performance Hoodie,11990,80,2750
+14,2025-06-07,West,Electronics,Tablet Air,17110,26,3400
+15,2025-06-11,North,Home,Coffee Machine,12680,20,1900
+16,2025-06-14,South,Electronics,Noise Cancelling Headphones,20840,22,5200
+17,2025-06-20,East,Furniture,Conference Table,16340,5,4100
+18,2025-06-25,West,Clothing,Travel Backpack,11280,67,2400
+19,2025-07-02,East,Electronics,Gaming Console,26450,16,6400
+20,2025-07-05,West,Electronics,Gaming Controller,6420,95,1800
+21,2025-07-09,North,Furniture,Ergonomic Keyboard,5880,84,1400
+22,2025-07-12,South,Home,Blender,4190,60,900
+23,2025-07-16,East,Clothing,Summer T-Shirt Pack,3520,120,700
+24,2025-07-19,West,Home,Smart Thermostat,8650,24,2100
+25,2025-07-23,North,Electronics,Camera Mirrorless,19400,9,4200
+26,2025-07-27,South,Furniture,Floor Lamp,3180,52,620
+27,2025-08-02,East,Electronics,Smart Speaker,7290,66,1600
+28,2025-08-06,West,Clothing,Trail Running Shoes,13450,58,2900
+29,2025-08-11,North,Home,Air Fryer,9870,29,2100
+30,2025-08-14,South,Electronics,Midrange Phone,17600,41,3300
+31,2025-08-18,East,Furniture,Accent Chair,7540,17,1200
+32,2025-08-22,West,Electronics,SSD 2TB,9280,77,2500
+33,2025-08-26,North,Clothing,Winter Coat,15890,34,3600
+34,2025-08-29,South,Home,Microwave Oven,9120,18,1500
+35,2025-09-03,East,Electronics,Ultrabook 13,24500,10,5600
+36,2025-09-07,West,Furniture,Drawer Cabinet,6900,12,1100
+37,2025-09-10,North,Electronics,Phone X (Refurb),13600,22,2200
+38,2025-09-13,South,Clothing,Formal Shirt,4980,90,1200
+39,2025-09-18,East,Home,Water Purifier,10540,16,1700
+40,2025-09-22,West,Electronics,Action Camera,12480,15,2800
+41,2025-09-26,North,Furniture,Recliner,17190,7,3500
+42,2025-10-03,South,Electronics,TV 55 inch,31200,8,7200
+43,2025-10-07,East,Clothing,Athleisure Set,8450,54,1900
+44,2025-10-12,West,Home,Smart Light Kit,4620,78,980
+45,2025-10-16,North,Electronics,Drone Mini,15950,13,4100
+46,2025-10-19,South,Furniture,Outdoor Patio Set,19800,6,3900
+47,2025-10-24,East,Electronics,Router WiFi 6,5280,88,1500
+48,2025-10-28,West,Clothing,Fitness Tracker Band,3890,130,900
+49,2025-11-03,North,Home,Vacuum Cleaner,10250,19,1600
+50,2025-11-07,South,Electronics,Desktop PC,28400,7,6400
+

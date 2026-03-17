@@ -1,0 +1,17 @@
+id,region,month,sales,category
+1,North,January,1200,Electronics
+2,North,February,1500,Electronics
+3,South,January,800,Home Office
+4,South,February,950,Home Office
+5,East,January,2200,Electronics
+6,East,February,1900,Furniture
+7,West,January,1100,Furniture
+8,West,February,1300,Electronics
+9,North,March,1700,Home Office
+10,South,March,1100,Electronics
+11,East,March,2500,Electronics
+12,West,March,1400,Furniture
+13,North,April,1600,Electronics
+14,South,April,1050,Furniture
+15,East,April,2100,Home Office
+16,West,April,1550,Electronics

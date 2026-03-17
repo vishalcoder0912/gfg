@@ -1,0 +1,41 @@
+{
+  "name": "ai-nl-analytics-dashboard-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "check:node": "node -e \"const v=process.versions.node.split('.').map(Number); const major=v[0]; if(major>=25){ console.error('Unsupported Node.js '+process.versions.node+'. Please use Node 20 LTS (recommended) or Node 18 LTS.'); process.exit(1);} console.log('Node OK:', process.versions.node);\"",
+    "predev": "npm run check:node",
+    "prebuild": "npm run check:node",
+    "prestart": "npm run check:node",
+    "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
+    "dev:clean": "npm run clean && next dev",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "autoprefixer": "^10.4.27",
+    "clsx": "^2.1.1",
+    "lucide-react": "^0.378.0",
+    "next": "14.2.3",
+    "react": "^18",
+    "react-dom": "^18",
+    "recharts": "^2.12.7",
+    "tailwind-merge": "^2.3.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^18",
+    "@types/react-dom": "^18",
+    "eslint": "^8",
+    "eslint-config-next": "14.2.3",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.17.0 <25"
+  }
+}

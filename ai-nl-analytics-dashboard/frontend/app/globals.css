@@ -1,0 +1,38 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg0: #fffaf0; /* sand-50 */
+  --bg1: #f6f7f8; /* ink-50 */
+  --card: rgba(255, 255, 255, 0.75);
+  --stroke: rgba(35, 52, 65, 0.12);
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  color: #1d2c36; /* ink-900 */
+  background:
+    radial-gradient(1000px 700px at 18% 5%, rgba(255, 201, 114, 0.35), transparent 60%),
+    radial-gradient(900px 650px at 85% 0%, rgba(206, 214, 220, 0.55), transparent 55%),
+    linear-gradient(180deg, var(--bg0), var(--bg1));
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-rise {
+  animation: rise 500ms ease-out both;
+}
