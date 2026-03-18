@@ -17,7 +17,8 @@ def _datetime_like_key(df: pd.DataFrame) -> Optional[str]:
     for c in df.columns:
         if df[c].dtype.kind in ("i", "u", "f"):
             continue
-        s = pd.to_datetime(df[c], errors="coerce")
+        # Pandas 2.x: format="mixed" avoids noisy warnings while handling varied formats.
+        s = pd.to_datetime(df[c], errors="coerce", format="mixed")
         if s.notna().mean() >= 0.7:
             return str(c)
     return None
@@ -58,4 +59,3 @@ def choose_chart(rows: List[Dict[str, Any]]) -> Tuple[str, Optional[str], List[s
         return "bar", cat, [numeric[0]]
 
     return "stacked_bar", cat, numeric[:4]
-

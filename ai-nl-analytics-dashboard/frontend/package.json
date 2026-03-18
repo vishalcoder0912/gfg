@@ -8,10 +8,10 @@
     "prebuild": "npm run check:node",
     "prestart": "npm run check:node",
     "clean": "node -e \"require('fs').rmSync('.next', { recursive: true, force: true })\"",
-    "dev:clean": "npm run clean && next dev",
-    "dev": "next dev",
+    "dev:clean": "npm run clean && next dev --hostname 127.0.0.1 --port 3000",
+    "dev": "next dev --hostname 127.0.0.1 --port 3000",
     "build": "next build",
-    "start": "next start",
+    "start": "next start --hostname 127.0.0.1 --port 3000",
     "lint": "next lint"
   },
   "dependencies": {

@@ -11,6 +11,12 @@ out/
 # Env
 .env
 .env.local
+.env.*.local
+.env.*.production
+.env.*.development
+.env.*.test
+*.env
+*.env.*
 
 # SQLite / data
 *.db
@@ -19,3 +25,15 @@ backend/data/
 # Temp / local artifacts
 backend/.temp/
 backend/test_results.txt
+
+# Secrets / keys / certs
+*.pem
+*.key
+*.p12
+*.pfx
+*.crt
+*.cer
+*.jks
+*.keystore
+id_rsa
+id_ed25519

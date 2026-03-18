@@ -4,6 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "dev:all": "powershell -ExecutionPolicy Bypass -File .\\scripts\\start-dev.ps1",
+    "frontend": "npm --prefix ai-nl-analytics-dashboard/frontend run dev",
+    "backend": ".\\.venv\\Scripts\\python.exe -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --app-dir ai-nl-analytics-dashboard/backend",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],

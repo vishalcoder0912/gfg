@@ -28,12 +28,17 @@ function ensureApiSuffix(base: string): string {
 
 function getApiBaseUrl(): string {
   const raw = process.env.NEXT_PUBLIC_API_URL?.trim()
-  if (raw) return normalizeUrl(raw)
+  // If explicitly set to an absolute URL, honor it.
+  if (raw && raw.startsWith('http')) return normalizeUrl(raw)
 
+  // Prefer direct backend URL to avoid dev proxy hangs.
   const backend = process.env.NEXT_PUBLIC_BACKEND_URL?.trim()
   if (backend) return ensureApiSuffix(backend)
 
-  // Local dev default when no Next.js rewrite is available
+  // Fall back to relative /api (Next.js rewrite) only if nothing else is set.
+  if (raw) return normalizeUrl(raw)
+
+  // Local dev default when no env is set
   return 'http://localhost:8000/api'
 }
 

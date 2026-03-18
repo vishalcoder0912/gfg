@@ -8,7 +8,10 @@
       "Bash(if exist:*)",
       "Bash(source .venv/Scripts/activate)",
       "Bash(python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''warnings:'''', d.get\\(''''warnings''''\\)\\); print\\(''''chartType:'''', [c[''''chartType''''] for c in d[''''dashboard''''][''''charts'''']]\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''warnings:'''', d.get\\(''''warnings''''\\)\\); print\\(''''chartTypes:'''', [c[''''chartType''''] for c in d[''''dashboard''''][''''charts'''']]\\)\")",
+      "Bash(python -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\(''''datasets:'''', d\\)\")"
     ]
   }
 }
