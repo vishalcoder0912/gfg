@@ -70,7 +70,6 @@ def _validate_plan(plan: Dict[str, Any]) -> Tuple[Dict[str, Any], List[str]]:
         ]
 
     if len(plan["charts"]) > 4:
-        warnings.append("Planner returned more than 4 charts; truncating to 4 for clarity.")
         plan["charts"] = plan["charts"][:4]
 
     for i, c in enumerate(plan["charts"]):

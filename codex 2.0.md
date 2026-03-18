@@ -2,6 +2,29 @@
 
 This document maps how files connect, why they exist, and which files are unused or framework-only. Scope is the entire `gfg` folder.
 
+## Current Project Status (March 2026)
+
+### Recent Changes
+The project has undergone several bug fixes and improvements:
+
+1. **FIX #5** - `frontend/lib/api.ts`: Fixed upload URL handling to read from environment variable (`NEXT_PUBLIC_UPLOAD_URL` or `NEXT_PUBLIC_BACKEND_URL`), with proper fallback logic for local dev vs production.
+
+2. **FIX #6** - `backend/app/services/dashboard_engine.py`: Empty/missing SQL from Gemini now generates a safe fallback SQL query instead of silently dropping the chart.
+
+3. **FIX #7** - `backend/app/services/sql_validator.py`: SQL comments are now stripped before validation instead of raising errors. This prevents valid queries from being rejected due to Gemini's inline comments.
+
+4. **FIX #8** - `frontend/app/page.tsx`: Removed unused imports (Sidebar, Navbar, and unused lucide icons: BarChart3, TrendingUp, Users, DollarSign, ArrowUpRight, ArrowDownRight, MessageSquare, Send).
+
+5. **Environment Configuration** - Updated `.env.example` files with proper defaults:
+   - Root `.env.example`: Added Gemini API key
+   - `backend/.env.example`: Added CORS origins for ports 3000/3001, timeout settings
+
+### Configuration Defaults
+- **Gemini Model**: `gemini-2.0-flash`
+- **Gemini Timeout**: 15 seconds
+- **CORS Origins**: `http://localhost:3000,http://127.0.0.1:3000,http://localhost:3001,http://127.0.0.1:3001`
+- **Max Upload Size**: 50MB (52428800 bytes)
+
 ## Scope and Exclusions
 The analysis focuses on source code and configuration. These paths are **not** treated as source dependencies:
 - `ai-nl-analytics-dashboard/frontend/node_modules/**` (third-party packages)
@@ -182,19 +205,19 @@ Top-level:
 
 Backend:
 - `backend/app/main.py`: FastAPI app creation, middleware setup, route registration, and demo dataset preload.
-- `backend/app/config.py`: environment-driven settings for SQLite path, CORS, upload limits, and Gemini config.
+- `backend/app/config.py`: environment-driven settings for SQLite path, CORS, upload limits, and Gemini config. Defaults: `gemini-2.0-flash`, 15s timeout.
 - `backend/app/database.py`: SQLite connections, table setup, safe identifier quoting, schema inspection, preview fetch.
 - `backend/app/schemas.py`: Pydantic models for request/response payloads.
 - `backend/app/routes/health.py`: health check endpoint.
 - `backend/app/routes/upload.py`: CSV upload and dataset metadata endpoints.
 - `backend/app/routes/dashboard.py`: dashboard generation entrypoint.
 - `backend/app/routes/chat.py`: follow-up refinement entrypoint.
-- `backend/app/services/dashboard_engine.py`: orchestrates plan -> SQL -> query -> chart -> insights -> session.
+- `backend/app/services/dashboard_engine.py`: orchestrates plan -> SQL -> query -> chart -> insights -> session. **FIX #6**: Generates fallback SQL when Gemini returns no SQL field.
 - `backend/app/services/gemini_service.py`: Gemini API calls with retry and strict JSON responses.
 - `backend/app/services/csv_service.py`: upload validation + CSV parse + register dataset.
 - `backend/app/services/dataset_registry.py`: in-memory dataset registry + SQLite persistence; loads demo dataset.
 - `backend/app/services/query_executor.py`: executes validated SELECT queries.
-- `backend/app/services/sql_validator.py`: strict SQL safety validation and normalization.
+- `backend/app/services/sql_validator.py`: strict SQL safety validation and normalization. **FIX #7**: Strips SQL comments before validation.
 - `backend/app/services/chart_selector.py`: deterministic chart type choice from query result shape.
 - `backend/app/services/session_service.py`: in-memory session store for follow-ups.
 - `backend/app/services/schema_profiler.py`: infers numeric/categorical/date columns and preview rows.
@@ -204,7 +227,7 @@ Backend:
 
 Frontend:
 - `frontend/app/layout.tsx`: global layout, fonts, and metadata.
-- `frontend/app/page.tsx`: main UI, state, dataset selection, dashboard rendering, follow-up flow.
+- `frontend/app/page.tsx`: main UI, state, dataset selection, dashboard rendering, follow-up flow. **FIX #8**: Removed unused imports.
 - `frontend/app/error.tsx`: per-route error UI.
 - `frontend/app/global-error.tsx`: app-level error UI.
 - `frontend/app/not-found.tsx`: 404 UI.
@@ -212,7 +235,7 @@ Frontend:
 - `frontend/components/DataTable.tsx`: generic table for row arrays.
 - `frontend/components/SqlPanel.tsx`: collapsible SQL transparency panel.
 - `frontend/components/dashboard/FileUpload.tsx`: CSV upload UI and interaction.
-- `frontend/lib/api.ts`: API calls to backend endpoints.
+- `frontend/lib/api.ts`: API calls to backend endpoints. **FIX #5**: Fixed upload URL handling for production/local dev.
 - `frontend/lib/types.ts`: shared TS types matching backend schemas.
 
 Config:
@@ -232,11 +255,11 @@ Backend data artifacts:
 - `backend/data/app_data.db`: runtime DB file, not source code.
 - `backend/data/demo/demo_sales.csv`: data asset used by `dataset_registry` when present.
 
-Frontend (unused components):
+Frontend (previously unused, now cleaned up):
 - `frontend/components/dashboard/ChartCard.tsx`: not imported anywhere.
 - `frontend/components/FileDropzone.tsx`: not imported anywhere.
-- `frontend/components/layout/Navbar.tsx`: imported in `app/page.tsx` but not rendered.
-- `frontend/components/layout/Sidebar.tsx`: imported in `app/page.tsx` but not rendered.
+- `frontend/components/layout/Navbar.tsx`: FIX #8 - import removed from `app/page.tsx`.
+- `frontend/components/layout/Sidebar.tsx`: FIX #8 - import removed from `app/page.tsx`.
 
 Root-level data assets (not code):
 - `ai-nl-analytics-dashboard/sample_sales_data.csv`: only used if backend runs with CWD at repo root; otherwise unused.
@@ -252,10 +275,13 @@ Contract coupling:
 - `backend/app/schemas.py` and `frontend/lib/types.ts` mirror each other. Changes to API fields require updates in both.
 
 API routing:
-- Frontend uses `NEXT_PUBLIC_API_URL` or defaults to `/api`. If there is no proxy, the backend must be reachable at that base.
+- Frontend uses `NEXT_PUBLIC_API_URL` (defaults to `/api`).
+- Upload endpoint uses `NEXT_PUBLIC_UPLOAD_URL` or `NEXT_PUBLIC_BACKEND_URL` (defaults to `http://localhost:8000` for local dev).
+- If there is no proxy, the backend must be reachable at that base.
 
 Gemini dependency:
 - `GEMINI_API_KEY` is required for plan and insight generation, but the backend has fallbacks for plan/insight failure.
+- Current default model: `gemini-2.0-flash`
 
 
   .\.venv\Scripts\Activate.ps1; python -m uvicorn app.main:create_app --factory --reload --host 0.0.0.0 --port 8000     
