@@ -16,3 +16,6 @@ out/
 *.db
 backend/data/
 
+# Temp / local artifacts
+backend/.temp/
+backend/test_results.txt
