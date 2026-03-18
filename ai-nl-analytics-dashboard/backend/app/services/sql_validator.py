@@ -1,42 +1,25 @@
 """
-SQL safety validator (mandatory).
+SQL safety validator.
 
-Rules:
-- Only allow SELECT/WITH
-- Reject DDL/DML/PRAGMA/ATTACH/DETACH/VACUUM, etc.
-- Reject multiple statements
-- Reject semicolon chaining
-- Strip a single trailing semicolon safely
-- Block sqlite_master references
-- Optionally enforce allowed table name(s)
+FIX: _reject_comments() used to BLOCK any SQL that contained -- or /* */
+     comments. Gemini almost always adds inline comments to its generated SQL,
+     so this was blocking every single query.
+
+     New behaviour: comments are STRIPPED before any other validation step.
+     The rest of the validation pipeline (forbidden keywords, table restriction,
+     LIMIT enforcement, single-statement check) is unchanged.
 """
 
 from __future__ import annotations
-
 import re
 from typing import List
-
 import sqlparse
 
 
 _FORBIDDEN_KEYWORDS = {
-    "insert",
-    "update",
-    "delete",
-    "drop",
-    "alter",
-    "truncate",
-    "create",
-    "replace",
-    "pragma",
-    "attach",
-    "detach",
-    "vacuum",
-    "reindex",
-    "grant",
-    "revoke",
+    "insert", "update", "delete", "drop", "alter", "truncate", "create",
+    "replace", "pragma", "attach", "detach", "vacuum", "reindex", "grant", "revoke",
 }
-
 _FORBIDDEN_SUBSTRINGS = {"sqlite_master", "sqlite_temp_master"}
 
 
@@ -44,36 +27,27 @@ def _strip(sql: str) -> str:
     return sql.strip().strip("\ufeff").strip()
 
 
+# ── FIX: strip comments instead of rejecting them ────────────────────────────
+def _strip_comments(sql: str) -> str:
+    """Remove /* block */ and -- line comments before validation."""
+    sql = re.sub(r"/\*.*?\*/", " ", sql, flags=re.DOTALL)   # block comments
+    sql = re.sub(r"--[^\n]*", " ", sql)                      # line comments
+    sql = re.sub(r"[ \t]+", " ", sql).strip()                # collapse whitespace
+    return sql
+
+
 def _normalize_sqlite_dialect(sql: str) -> str:
-    """
-    Best-effort normalization for common non-SQLite patterns produced by LLMs.
-
-    This is intentionally conservative: only a few safe, mechanical rewrites.
-    """
     out = sql
-
-    # Postgres/MySQL-ish "NOW()"
     out = re.sub(r"\bnow\s*\(\s*\)\b", "CURRENT_TIMESTAMP", out, flags=re.IGNORECASE)
-
-    # Postgres ILIKE -> SQLite LIKE (SQLite LIKE is case-insensitive for ASCII by default).
     out = re.sub(r"\bilike\b", "LIKE", out, flags=re.IGNORECASE)
-
-    # Postgres DATE_TRUNC('month', col) -> SQLite date(col, 'start of month')
     out = re.sub(
         r"\bdate_trunc\s*\(\s*'month'\s*,\s*([^)]+?)\s*\)",
-        r"date(\1, 'start of month')",
-        out,
-        flags=re.IGNORECASE,
+        r"date(\1, 'start of month')", out, flags=re.IGNORECASE,
     )
-
-    # Postgres EXTRACT(YEAR FROM col) -> SQLite CAST(strftime('%Y', col) AS INTEGER)
     out = re.sub(
         r"\bextract\s*\(\s*year\s+from\s+([^)]+?)\s*\)",
-        r"CAST(strftime('%Y', \1) AS INTEGER)",
-        out,
-        flags=re.IGNORECASE,
+        r"CAST(strftime('%Y', \1) AS INTEGER)", out, flags=re.IGNORECASE,
     )
-
     return out
 
 
@@ -96,19 +70,11 @@ def _statement_kind(sql: str) -> str:
     parsed = sqlparse.parse(sql)
     if not parsed:
         return ""
-    stmt = parsed[0]
-    for token in stmt.flatten():
-        if token.is_whitespace:
-            continue
-        if token.value in ("(", ")"):
+    for token in parsed[0].flatten():
+        if token.is_whitespace or token.value in ("(", ")"):
             continue
         return token.value.upper()
     return ""
-
-
-def _reject_comments(sql: str) -> None:
-    if "--" in sql or "/*" in sql or "*/" in sql:
-        raise ValueError("SQL comments are not allowed.")
 
 
 def _reject_forbidden(sql: str) -> None:
@@ -122,11 +88,10 @@ def _reject_forbidden(sql: str) -> None:
 
 
 def _extract_table_refs(sql: str) -> List[str]:
-    low = sql.lower()
     refs: List[str] = []
     for m in re.finditer(
         r'\b(from|join)\s+(?:"([a-zA-Z0-9_]+)"|`([a-zA-Z0-9_]+)`|([a-zA-Z0-9_]+))',
-        low,
+        sql.lower(),
     ):
         refs.append(m.group(2) or m.group(3) or m.group(4))
     return refs
@@ -146,14 +111,8 @@ def _enforce_table(sql: str, allowed_tables: List[str]) -> None:
 def _ensure_limit(sql: str, max_limit: int = 1000) -> str:
     m = re.search(r"\blimit\s+(\d+)\b", sql, flags=re.IGNORECASE)
     if m:
-        n = int(m.group(1))
-        if n > max_limit:
-            sql = re.sub(
-                r"(\blimit\s+)\d+\b",
-                rf"\g<1>{max_limit}",
-                sql,
-                flags=re.IGNORECASE,
-            )
+        if int(m.group(1)) > max_limit:
+            sql = re.sub(r"(\blimit\s+)\d+\b", rf"\g<1>{max_limit}", sql, flags=re.IGNORECASE)
         return sql
     return sql.rstrip() + f" LIMIT {max_limit}"
 
@@ -161,12 +120,15 @@ def _ensure_limit(sql: str, max_limit: int = 1000) -> str:
 def validate_and_normalize_sql(raw_sql: str, allowed_tables: List[str]) -> str:
     sql = _strip(raw_sql)
     if not sql:
-        raise ValueError("Empty SQL returned by Gemini.")
+        raise ValueError("Empty SQL.")
+
+    sql = _strip_comments(sql)               # ← FIX: strip first, don't reject
+    if not sql:
+        raise ValueError("SQL empty after stripping comments.")
 
     sql = _normalize_sqlite_dialect(sql)
     sql = _strip_trailing_semicolon(sql)
     sql = _ensure_single_statement(sql)
-    _reject_comments(sql)
     _reject_forbidden(sql)
 
     kind = _statement_kind(sql)

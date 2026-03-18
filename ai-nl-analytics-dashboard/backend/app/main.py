@@ -1,16 +1,9 @@
 """
-FastAPI entrypoint for the Conversational BI prototype.
+FastAPI entrypoint.
 
-Required endpoints:
-- GET  /health
-- POST /upload-csv
-- POST /generate-dashboard
-- POST /follow-up
-
-Optional:
-- GET /datasets
-- GET /dataset/{dataset_id}/schema
-- GET /dataset/{dataset_id}/preview
+FIX: ensure_demo_dataset_loaded() was imported but never called.
+     Added the call inside create_app() so the demo dataset is
+     available immediately on startup.
 """
 
 from fastapi import FastAPI
@@ -30,6 +23,7 @@ def create_app() -> FastAPI:
 
     ensure_sqlite_parent_dir()
     ensure_meta_tables()
+    ensure_demo_dataset_loaded()           # ← THIS LINE WAS MISSING
 
     app.add_middleware(
         CORSMiddleware,
@@ -39,10 +33,15 @@ def create_app() -> FastAPI:
         allow_headers=["*"],
     )
 
-    app.include_router(health_router)
-    app.include_router(upload_router)
-    app.include_router(dashboard_router)
-    app.include_router(chat_router)
+    app.include_router(health_router, prefix="/api")
+    app.include_router(upload_router, prefix="/api")
+    app.include_router(dashboard_router, prefix="/api")
+    app.include_router(chat_router, prefix="/api")
+
+    @app.get("/")
+    def read_root():
+        return {"message": "Conversational BI Dashboard API is running. Check /api/datasets for available data."}
+
     return app
 
 

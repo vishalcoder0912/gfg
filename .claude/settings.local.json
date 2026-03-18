@@ -5,7 +5,10 @@
       "Bash(set NODE_OPTIONS=--no-deprecation)",
       "Bash(tasklist)",
       "Bash(findstr node:*)",
-      "Bash(if exist:*)"
+      "Bash(if exist:*)",
+      "Bash(source .venv/Scripts/activate)",
+      "Bash(python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000)",
+      "Bash(curl:*)"
     ]
   }
 }

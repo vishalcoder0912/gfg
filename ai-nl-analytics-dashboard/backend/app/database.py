@@ -23,7 +23,7 @@ def ensure_sqlite_parent_dir() -> None:
 
 def ensure_meta_tables() -> None:
     """
-    Create metadata tables required for multi-dataset support.
+    Create metadata tables required for multi-dataset support and session persistence.
     """
     ensure_sqlite_parent_dir()
     with sqlite_conn_rw() as conn:
@@ -43,6 +43,20 @@ def ensure_meta_tables() -> None:
               date_columns_json TEXT NOT NULL,
               preview_rows_json TEXT NOT NULL,
               created_at INTEGER NOT NULL
+            );
+            """.strip()
+        )
+        # Sessions table — persists follow-up chat sessions across backend restarts
+        cur.execute(
+            """
+            CREATE TABLE IF NOT EXISTS sessions_meta (
+              session_id TEXT PRIMARY KEY,
+              dataset_id TEXT NOT NULL,
+              original_prompt TEXT NOT NULL,
+              last_dashboard TEXT NOT NULL,
+              last_plan TEXT NOT NULL,
+              last_sql_queries TEXT NOT NULL,
+              updated_at REAL NOT NULL
             );
             """.strip()
         )
